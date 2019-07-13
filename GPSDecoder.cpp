@@ -52,8 +52,7 @@ int GPSDecoder::initFiles()
 					<< "\t\t\t\t<styleUrl>#test_line</styleUrl>\n"
 					<< "\t\t\t\t<LineString>\n"
 					<< "\t\t\t\t\t<tessellate>1</tessellate>\n"
-					<< "\t\t\t\t\t<coordinates>\n"
-					<< std::endl;
+					<< "\t\t\t\t\t<coordinates>"<< std::endl;
 
 		file.close();
 		return 1;
@@ -71,7 +70,7 @@ void GPSDecoder::printKMLtoConsole()
 
 int GPSDecoder::printKMLtoFile()
 {
-	file.open(UARTStr, std::ios::app);
+	file.open(KMLOutputStr, std::ios::app);
 	if(file.is_open() && ((GGAData.gps_fix == 1) || (GGAData.gps_fix == 2)))
 	{
 		file.precision(10);
