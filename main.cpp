@@ -34,7 +34,12 @@ int main(int argc, char** argv )
   {
     std::system("clear");
     std::cout << "Search and Rescue Menu V0.1" << std::endl;
-    GPSWorker.printGGAData();
+    GPSWorker.printGGA();
+    GPSWorker.printGSA();
+    GPSWorker.printGSV();
+    GPSWorker.printRMC();
+    GPSWorker.printTXT();
+    GPSWorker.printVTG();
     usleep(100000);
   }
 

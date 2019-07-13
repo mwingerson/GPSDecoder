@@ -89,11 +89,11 @@ struct GLLStruct
 struct GSAStruct
 {
 	std::string autoSelect;
-	int GPSFix;
+	int GPSFix = 0;
 	std::vector<int> PRN;
-	float PDOP;
-	float HDOP;
-	float VDOP;
+	float PDOP = 0;
+	float HDOP = 0;
+	float VDOP = 0;
 };
 
 // $GPGSV,2,1,08,01,40,083,46,02,17,308,41,12,07,344,39,14,22,228,45*75
@@ -113,12 +113,12 @@ struct GSAStruct
 
 struct GSVStruct
 {
-	int fullDataSentNum;
-	int sentence;
-	int sateliteInView;
-	int satPRNNum;
-	int elevation;
-	int azimuth;
+	int fullDataSentNum = 0;
+	int sentence = 0;
+	int sateliteInView = 0;
+	int satPRNNum = 0;
+	int elevation = 0;
+	int azimuth = 0;
 };
 
 // $GPRMC,123519,A,4807.038,N,01131.000,E,022.4,084.4,230394,003.1,W*6A
@@ -180,13 +180,17 @@ public:
 
 	int GPSSentenceCheck(std::string);
 
-	void printGGAData();
-	void printGSAData();
-	void printGSVData();
-	void printGLLData();
-	void printRMCData();
+	void printGGA();
+	void printGSA();
+	void printGSV();
+	void printGLL();
+	void printRMC();
+	void printTXT();
+	void printVTG();
+
 	void printKMLtoConsole();
 	int printKMLtoFile();
+
 	void readFFFData(char*);
 	int readGGAData(char*);
 	void readGSAData(char*);
@@ -204,6 +208,7 @@ public:
 	GSVStruct GSVData;
 	GLLStruct GLLData;
 	RMCStruct RMCData;
+//	TXTStruct TXTData;
 	VTGStruct VTGData;
 
 	int iterator = 0;
