@@ -19,9 +19,9 @@ int main(int argc, char** argv )
   std::cout << "PROG START" << std::endl;
   std::string paramInput = "/dev/ttyACM0";
 
-  GPSDecoder GPSWorker;
+  GPSDecoder GPSWorker(paramInput);
 
-  if(!GPSWorker.initDecoder(paramInput))
+  if(!GPSWorker.initDecoder())
   {
     std::cout << "Failed to initialize GPSWorker. Closing" << std::endl;
 

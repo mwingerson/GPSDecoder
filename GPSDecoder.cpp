@@ -1,44 +1,33 @@
 #include "GPSDecoder.h"
 
-GPSDecoder::GPSDecoder(){ }
+GPSDecoder::GPSDecoder(std::string UARTStr){ }
 
-GPSDecoder::~GPSDecoder(){ }
-
-void GPSDecoder::stopGPS()
-{
+GPSDecoder::~GPSDecoder(){
 		UARTStream.Close();
-		//closeFile();
-		GPSClosed = true;
+		closeFile();
 }
 
-int GPSDecoder::initDecoder(std::string paramInput)
+int GPSDecoder::initDecoder()
 {
 	int ret = 0;
 	ret = initFiles();
-	ret += initGPS(paramInput);
+	ret += initGPS();
 	if(ret == 2)
 		return 1;
 	else
 		return 0;
-
 }
 
-int GPSDecoder::initGPS(std::string paramInput)
+int GPSDecoder::initGPS()
 {
-	//start
-	std::cout << "Initializing GPS on: " << paramInput << std::endl;
 
-	UARTStream.Open(paramInput);
+	UARTStream.Open(UARTStr);
 	UARTStream.SetBaudRate(SerialStreamBuf::BAUD_38400);
 
-	if(UARTStream.IsOpen()) {
-		//std::cout << "Serial Port Opened" << std::endl;
+	if(UARTStream.IsOpen())
 		return 1;
-	}
-	else {
-		//std::cout << "Port not opened" << std::endl;
+	else
 		return 0;
-	}
 }
 
 int GPSDecoder::initFiles()
@@ -72,9 +61,17 @@ int GPSDecoder::initFiles()
 	return 0;
 }
 
-int GPSDecoder::printKMLData()
+void GPSDecoder::printKMLtoConsole()
 {
-	file.open("KMLOutput.kml", std::ios::app);
+	std::cout << "print KML "
+	<< GGAData.GGALongitudeNum << ","
+	<< GGAData.GGALatitudeNum << "," << 0
+	<< std::endl;
+}
+
+int GPSDecoder::printKMLtoFile()
+{
+	file.open(UARTStr, std::ios::app);
 	if(file.is_open() && ((GGAData.gps_fix == 1) || (GGAData.gps_fix == 2)))
 	{
 		file.precision(10);
@@ -83,11 +80,6 @@ int GPSDecoder::printKMLData()
 		<< GGAData.GGALongitudeNum << ","
 		<< GGAData.GGALatitudeNum << "," << 0
 		<< std::endl;
-
-		// std::cout << "print KML "
-		// << GGAData.GGALongitudeNum << ","
-		// << GGAData.GGALatitudeNum << "," << 0
-		// << std::endl;
 
 		file.close();
 
@@ -117,7 +109,6 @@ void GPSDecoder::crunchGPSSentence(std::string inputString)
 	//get GPS senetence name
 	std::string GPSSentenceName = inputString.substr(3,3);
 
-	//std::cout << "GPSSentName: " << GPSSentenceName << std::endl;
 	//Make copy of inputstring in a char array
 	char* GPSSentence = new char[inputString.length()+1];
 	for(int i = 0; i<inputString.length(); i++)
@@ -511,8 +502,8 @@ int GPSDecoder::GPSSentenceCheck(std::string sent)
 
 	if((sent.length() > 83)||(sent.length() < 6))
 	{
-		std::cout << "GPS too long/short" << std::endl;
-		std::cout << "sentence: " << sent << std::endl;
+		//std::cout << "GPS too long/short" << std::endl;
+		//std::cout << "sentence: " << sent << std::endl;
 		//FAIL
 		return 1;
 	}
@@ -549,20 +540,14 @@ void GPSDecoder::run()
 		std::string inputString;
 		UARTStream >> inputString;
 
-		int SentGood = GPSSentenceCheck(inputString);
-
-		if(!SentGood)
+		if(!GPSSentenceCheck(inputString))
 		{
 		 	crunchGPSSentence(inputString);
-			if(!printKMLData())
+			if(!printKMLtoFile())
 			{
 				std::cout << "printKMLData Failed: " << inputString << std::endl;
-
 			}
 		}
 		usleep(10);
 	}
-
-	closeFile();
-	stopGPS();
 }

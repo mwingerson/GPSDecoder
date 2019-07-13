@@ -43,13 +43,13 @@ struct GGAStruct
 	std::string GGAfixTime;
 	std::string GGALatitude;
 	std::string GGALongitude;
-	float GGALatitudeNum;
-	float GGALongitudeNum;
-	int gps_fix;
-	int satNum;
-	float horzDOP;
-	float alt;
-	float heightOfGeoid;
+	float GGALatitudeNum = 0;
+	float GGALongitudeNum = 0;
+	int gps_fix = 0;
+	int satNum = 0;
+	float horzDOP = 0;
+	float alt = 0;
+	float heightOfGeoid = 0;
 	int empty1;
 	int empty2;
 };
@@ -170,14 +170,13 @@ struct VTGStruct
 class GPSDecoder
 {
 public:
-	GPSDecoder();
+	GPSDecoder(std::string);
 	~GPSDecoder();
 
-	int initDecoder(std::string);
-	int initGPS(std::string);
+	int initDecoder();
+	int initGPS();
 	int initFiles();
 	void closeFile();
-	void stopGPS();
 
 	int GPSSentenceCheck(std::string);
 
@@ -186,7 +185,8 @@ public:
 	void printGSVData();
 	void printGLLData();
 	void printRMCData();
-	int printKMLData();
+	void printKMLtoConsole();
+	int printKMLtoFile();
 	void readFFFData(char*);
 	int readGGAData(char*);
 	void readGSAData(char*);
@@ -216,5 +216,8 @@ public:
 private:
 	std::ofstream file;
 
-		SerialStream UARTStream;
+	std::string UARTStr = "/dev/ttyACM0";
+	std::string KMLOutputStr = "KMLOutput.kml";
+
+	SerialStream UARTStream;
 };
